@@ -32,7 +32,8 @@ public record JobApplication
     public DateTime DateApplied { get; set; }
     public string? JobDescription { get; set; }
     public string? Notes { get; set; }
-    public decimal? Salary { get; set; }
+    public decimal? MinSalary { get; set; }
+    public decimal? MaxSalary { get; set; }
 }
 
 class JobApplicationDb : DbContext

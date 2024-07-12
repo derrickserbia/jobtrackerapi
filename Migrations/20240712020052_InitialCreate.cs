@@ -23,7 +23,8 @@ namespace JobTrackerApi.Migrations
                     DateApplied = table.Column<DateTime>(type: "TEXT", nullable: false),
                     JobDescription = table.Column<string>(type: "TEXT", nullable: true),
                     Notes = table.Column<string>(type: "TEXT", nullable: true),
-                    Salary = table.Column<decimal>(type: "TEXT", nullable: true)
+                    MinSalary = table.Column<decimal>(type: "TEXT", nullable: true),
+                    MaxSalary = table.Column<decimal>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
