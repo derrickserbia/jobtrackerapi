@@ -26,6 +26,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/jobapplications", async (JobApplicationDb db) => await db.JobApplications.ToListAsync());
+app.MapPost("/jobapplication", async (JobApplicationDb db, JobApplication jobApplication) => 
+{
+    await db.JobApplications.AddAsync(jobApplication);
+    await db.SaveChangesAsync();
+    return Results.Created($"/jobapplication/{jobApplication.Id}", jobApplication);
+});
+
 
 app.Run();
