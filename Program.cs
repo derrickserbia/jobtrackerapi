@@ -28,21 +28,21 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/jobapplications", async (JobApplicationDb db) => await db.JobApplications.ToListAsync());
 
-app.MapGet("/jobapplication/{id}", async (JobApplicationDb db, int id) => 
+app.MapGet("/jobapplications/{id}", async (JobApplicationDb db, int id) => 
 {
     var jobApplication = await db.JobApplications.FindAsync(id);
     return jobApplication is null ? Results.NotFound() : Results.Ok(jobApplication);
 
 });
 
-app.MapPost("/jobapplication", async (JobApplicationDb db, JobApplication jobApplication) => 
+app.MapPost("/jobapplications", async (JobApplicationDb db, JobApplication jobApplication) => 
 {
     await db.JobApplications.AddAsync(jobApplication);
     await db.SaveChangesAsync();
-    return Results.Created($"/jobapplication/{jobApplication.Id}", jobApplication);
+    return Results.Created($"/jobapplications/{jobApplication.Id}", jobApplication);
 });
 
-app.MapPut("/jobapplication/{id}", async (JobApplicationDb db, JobApplication updatedJobApplication, int id) =>
+app.MapPut("/jobapplications/{id}", async (JobApplicationDb db, JobApplication updatedJobApplication, int id) =>
 {
     var jobApplication = await db.JobApplications.FindAsync(id);
     if (jobApplication is null) return Results.NotFound();
@@ -60,7 +60,7 @@ app.MapPut("/jobapplication/{id}", async (JobApplicationDb db, JobApplication up
     return Results.NoContent();
 });
 
-app.MapDelete("/jobapplication/{id}", async (JobApplicationDb db, int id) =>
+app.MapDelete("/jobapplications/{id}", async (JobApplicationDb db, int id) =>
 {
     var jobApplication = await db.JobApplications.FindAsync(id);
     if (jobApplication is null) return Results.NotFound();
