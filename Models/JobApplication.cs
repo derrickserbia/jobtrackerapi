@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace JobTrackerApi.Models;
+﻿namespace JobTrackerApi.Models;
 
 public record JobApplication
 {
@@ -16,10 +14,4 @@ public record JobApplication
     public string? PostingUrl { get; set; }
     public string? HiringTeam { get; set; }
     public List<Skill> TechStack { get; set; } = new();
-}
-
-class JobApplicationDb : DbContext
-{
-    public JobApplicationDb(DbContextOptions<JobApplicationDb> options) : base(options) { }
-    public DbSet<JobApplication> JobApplications => Set<JobApplication>();
 }

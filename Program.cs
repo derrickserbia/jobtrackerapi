@@ -1,3 +1,4 @@
+using JobTrackerApi.Data;
 using JobTrackerApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
