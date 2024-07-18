@@ -1,30 +1,9 @@
-﻿using System.ComponentModel;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace JobTrackerApi;
+namespace JobTrackerApi.Models;
 
 public record JobApplication
 {
-    public enum ApplicationStatus
-    {
-        [Description("Application is pending review.")]
-        Pending,
-
-        [Description("Interview has been scheduled.")]
-        InterviewScheduled,
-
-        [Description("Application was rejected by the employer.")]
-        RejectedByEmployer,
-
-        [Description("Application was withdrawn by me.")]
-        Withdrawn,
-
-        [Description("Job offer has been received.")]
-        OfferReceived,
-
-        [Description("Job offer has been accepted.")]
-        OfferAccepted
-    }
     public int Id { get; set; }
     public required string JobTitle { get; set; }
     public required string CompanyName { get; set; }
@@ -34,6 +13,9 @@ public record JobApplication
     public string? Notes { get; set; }
     public decimal? MinSalary { get; set; }
     public decimal? MaxSalary { get; set; }
+    public string? PostingUrl { get; set; }
+    public string? HiringTeam { get; set; }
+    public List<Skill> TechStack { get; set; } = new();
 }
 
 class JobApplicationDb : DbContext
