@@ -73,4 +73,9 @@ app.MapDelete("/jobapplications/{id}", async (JobApplicationDb db, int id) =>
     return Results.Ok();
 });
 
+app.MapGet("/jobapplications/extract", (string postingUrl) =>
+{
+    return Results.Ok(postingUrl);
+});
+
 app.Run();
