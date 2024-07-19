@@ -48,14 +48,17 @@ app.MapPut("/jobapplications/{id}", async (JobApplicationDb db, JobApplication u
     var jobApplication = await db.JobApplications.FindAsync(id);
     if (jobApplication is null) return Results.NotFound();
     
-    jobApplication.JobTitle = updatedJobApplication.JobTitle;
-    jobApplication.CompanyName = updatedJobApplication.CompanyName;
-    jobApplication.Status = updatedJobApplication.Status;
-    jobApplication.DateApplied = updatedJobApplication.DateApplied;
-    jobApplication.JobDescription = updatedJobApplication.JobDescription;
-    jobApplication.Notes = updatedJobApplication.Notes;
-    jobApplication.MinSalary = updatedJobApplication.MinSalary;
-    jobApplication.MaxSalary = updatedJobApplication.MaxSalary;
+    jobApplication.JobTitle = updatedJobApplication.JobTitle != jobApplication.JobTitle? updatedJobApplication.JobTitle : jobApplication.JobTitle;
+    jobApplication.CompanyName = updatedJobApplication.CompanyName != jobApplication.CompanyName? updatedJobApplication.CompanyName : jobApplication.CompanyName;
+    jobApplication.Status = updatedJobApplication.Status != jobApplication.Status? updatedJobApplication.Status : jobApplication.Status;
+    jobApplication.DateApplied = updatedJobApplication.DateApplied != jobApplication.DateApplied? updatedJobApplication.DateApplied : jobApplication.DateApplied;
+    jobApplication.JobDescription = updatedJobApplication.JobDescription != jobApplication.JobDescription? updatedJobApplication.JobDescription : jobApplication.JobDescription;
+    jobApplication.Notes = updatedJobApplication.Notes != jobApplication.Notes? updatedJobApplication.Notes : jobApplication.Notes;
+    jobApplication.MinSalary = updatedJobApplication.MinSalary != jobApplication.MinSalary? updatedJobApplication.MinSalary : jobApplication.MinSalary;
+    jobApplication.MaxSalary = updatedJobApplication.MaxSalary != jobApplication.MaxSalary? updatedJobApplication.MaxSalary : jobApplication.MaxSalary;
+    jobApplication.PostingUrl = updatedJobApplication.PostingUrl != jobApplication.PostingUrl ? updatedJobApplication.PostingUrl : jobApplication.PostingUrl;
+    jobApplication.HiringTeam = updatedJobApplication.HiringTeam != jobApplication.HiringTeam ? updatedJobApplication.HiringTeam : jobApplication.HiringTeam;
+    jobApplication.TechStack = updatedJobApplication.TechStack != jobApplication.TechStack ? updatedJobApplication.TechStack : jobApplication.TechStack;
 
     await db.SaveChangesAsync();
     return Results.NoContent();
