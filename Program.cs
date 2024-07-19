@@ -1,3 +1,7 @@
+using System.Net;
+using Azure;
+// using Azure.AI.DocumentIntelligence;
+using Azure.AI.FormRecognizer.DocumentAnalysis;
 using JobTrackerApi.Data;
 using JobTrackerApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -73,8 +77,65 @@ app.MapDelete("/jobapplications/{id}", async (JobApplicationDb db, int id) =>
     return Results.Ok();
 });
 
-app.MapGet("/jobapplications/extract", (string postingUrl) =>
+app.MapGet("/jobapplications/extract", async (string postingUrl) =>
 {
+    using WebClient webClient = new WebClient();
+    string htmlContent = webClient.DownloadString(postingUrl);
+
+    string azureEndpoint = "";
+    string key = "";
+    AzureKeyCredential credential = new AzureKeyCredential(key);
+    // DocumentIntelligenceClient documentIntelligenceClient = new DocumentIntelligenceClient(new Uri(azureEndpoint), credential);
+    DocumentAnalysisClient documentAnalysisClient = new DocumentAnalysisClient(new Uri(azureEndpoint), credential);
+
+
+    using var stream = File.OpenRead(htmlContent);
+    AnalyzeDocumentOperation operation = await documentAnalysisClient.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-layout", stream);
+    await operation.WaitForCompletionAsync();
+    AnalyzeResult result = operation.Value;
+
+    Dictionary<string, string> extractedFields = new Dictionary<string, string>();
+
+    // Extract Job Title (if present as a heading or in a specific element)
+    foreach (DocumentPage page in result.Pages)
+    {
+        foreach (DocumentLine line in page.Lines)
+        {
+            if (line.Content.Contains("Job Title") || line.Content.Contains("Position"))
+            {
+                string jobTitle = line.Content.Replace("Job Title:", "").Replace("Position:", "").Trim();
+                extractedFields["jobTitle"] = jobTitle;
+                break;  // Assuming only one job title
+            }
+        }
+    }
+
+    // Extract Salary Information (assuming it's in a specific format)
+    foreach (DocumentLine line in result.Pages[0].Lines)  // Start from the first page
+    {
+        if (line.Content.Contains("Salary") || line.Content.Contains("Compensation"))
+        {
+            string salaryRange = line.Content;
+            // Use regular expressions or string manipulation to extract min and max
+            // (Adapt this to match your specific salary format)
+            string[] parts = salaryRange.Split('-');
+            if (parts.Length == 2)
+            {
+                extractedFields["minSalary"] = parts[0].Trim();
+                extractedFields["maxSalary"] = parts[1].Trim();
+            }
+            break; // Assuming only one salary range
+        }
+    }
+
+    // Uri fileUri = new Uri (postingUrl);
+    // AnalyzeDocumentContent content = new AnalyzeDocumentContent()
+    // {
+    //     UrlSource= fileUri
+    // };
+    // Operation<AnalyzeResult> operation = await documentIntelligenceClient.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-layout", content);
+    // AnalyzeResult result = operation.Value;
+
     return Results.Ok(postingUrl);
 });
 
