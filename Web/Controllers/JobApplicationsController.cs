@@ -1,10 +1,10 @@
-using JobTrackerApi.Data;
-using JobTrackerApi.Pagination;
-using JobTrackerApi.Models;
+using JobTrackerApi.Core.Entities;
+using JobTrackerApi.Infrastructure.Data;
+using JobTrackerApi.Infrastructure.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobTrackerApi.Controllers;
+namespace JobTrackerApi.Web.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]

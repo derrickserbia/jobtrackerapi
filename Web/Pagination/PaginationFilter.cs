@@ -1,4 +1,4 @@
-namespace JobTrackerApi.Pagination;
+namespace JobTrackerApi.Infrastructure.Pagination;
 
 public class PaginationFilter
 {

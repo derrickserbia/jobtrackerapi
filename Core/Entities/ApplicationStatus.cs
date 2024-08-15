@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace JobTrackerApi.Models;
+namespace JobTrackerApi.Core.Entities;
 
 public enum ApplicationStatus
 {

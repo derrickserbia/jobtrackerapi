@@ -1,4 +1,4 @@
-﻿namespace JobTrackerApi.Models;
+﻿namespace JobTrackerApi.Core.Entities;
 
 public class JobApplication
 {
