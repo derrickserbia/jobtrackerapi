@@ -1,6 +1,6 @@
 ﻿namespace JobTrackerApi.Models;
 
-public record JobApplication
+public class JobApplication
 {
     public int Id { get; set; }
     public required string JobTitle { get; set; }
@@ -14,4 +14,15 @@ public record JobApplication
     public string? PostingUrl { get; set; }
     public string? HiringTeam { get; set; }
     public List<Skill> TechStack { get; set; } = new();
+
+    public bool HasKeyword(string searchString)
+    {
+        var lower = searchString.ToLower();
+        return JobTitle.ToLower().Contains(lower)
+            || CompanyName.ToLower().Contains(lower)
+            || (!string.IsNullOrEmpty(JobDescription) && JobDescription.ToLower().Contains(lower))
+            || (!string.IsNullOrEmpty(Notes) && Notes.ToLower().Contains(lower))
+            || (!string.IsNullOrEmpty(PostingUrl) && PostingUrl.ToLower().Contains(lower))
+            || (!string.IsNullOrEmpty(HiringTeam) && HiringTeam.ToLower().Contains(lower));
+    }
 }
