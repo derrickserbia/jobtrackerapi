@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JobTrackerApi.Migrations
 {
-    [DbContext(typeof(JobApplicationDb))]
-    partial class JobApplicationDbModelSnapshot : ModelSnapshot
+    [DbContext(typeof(JobApplicationDbContext))]
+    partial class JobApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
