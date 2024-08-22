@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JobTrackerApi.Migrations
 {
-    [DbContext(typeof(JobApplicationDb))]
+    [DbContext(typeof(JobApplicationDbContext))]
     [Migration("20240719000607_AddJobApplicationHiringTeam")]
     partial class AddJobApplicationHiringTeam
     {

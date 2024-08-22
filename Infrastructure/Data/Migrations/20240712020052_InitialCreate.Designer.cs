@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JobTrackerApi.Migrations
 {
-    [DbContext(typeof(JobApplicationDb))]
-    [Migration("20240719000034_AddJobApplicationPostingUrl")]
-    partial class AddJobApplicationPostingUrl
+    [DbContext(typeof(JobApplicationDbContext))]
+    [Migration("20240712020052_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace JobTrackerApi.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
 
-            modelBuilder.Entity("JobTrackerApi.Models.JobApplication", b =>
+            modelBuilder.Entity("JobTrackerApi.JobApplication", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,9 +47,6 @@ namespace JobTrackerApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PostingUrl")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
