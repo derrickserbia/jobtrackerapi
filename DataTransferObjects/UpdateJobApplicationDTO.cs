@@ -19,7 +19,8 @@ public class UpdateJobApplicationDTO
 
     public bool IsValid()
     {
-        return MinSalary >= 0 && MaxSalary >= 0 && (MinSalary == MaxSalary || MinSalary < MaxSalary) &&
+        return
+            MinSalary >= 0 && MaxSalary >= 0 && (MinSalary == MaxSalary || MinSalary < MaxSalary) &&
             Enum.IsDefined(typeof(JobApplicationStatus), JobApplicationStatusId);
     }
 }

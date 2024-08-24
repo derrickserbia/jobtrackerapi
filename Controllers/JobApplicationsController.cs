@@ -17,28 +17,35 @@ public class JobApplicationsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<JobApplicationDTO>>> GetJobApplications(string? searchString, int? jobApplicationStatusId)
+    // public async Task<ActionResult<IEnumerable<JobApplicationDTO>>> GetJobApplications(string? searchString, int? jobApplicationStatusId)
+    public async Task<ActionResult<IEnumerable<JobApplicationDTO>>> GetJobApplications([FromQuery] JobApplicationQueryParameters queryParameters)
     {
         var jobApplications = _context.JobApplications.AsQueryable();
 
-        if (jobApplicationStatusId.HasValue)
+        if (queryParameters.JobApplicationStatusId.HasValue)
         {
-            if (!Enum.IsDefined(typeof(JobApplicationStatus), jobApplicationStatusId))
+            if (!Enum.IsDefined(typeof(JobApplicationStatus), queryParameters.JobApplicationStatusId))
             {
                 return BadRequest("Invalid jobApplicationStatusId.");
             }
-            jobApplications = jobApplications.Where(j => j.JobApplicationStatusId == jobApplicationStatusId);
+            jobApplications = jobApplications.Where(j => j.JobApplicationStatusId == queryParameters.JobApplicationStatusId);
         }
 
-        if (!string.IsNullOrEmpty(searchString))
+        if (!string.IsNullOrEmpty(queryParameters.SearchString))
         {
-            searchString = searchString.Trim().ToLower();
-            jobApplications = jobApplications.Where(j =>
-                j.JobTitle.ToLower().Contains(searchString)
-                || j.CompanyName.ToLower().Contains(searchString)
-                || j.HiringTeam.ToLower().Contains(searchString)
-                || j.JobDescription.ToLower().Contains(searchString)
-            );
+            var searchString = queryParameters.SearchString.Trim().ToLower();
+            var searchWords = searchString.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+            if (searchWords != null && searchWords.Length != 0)
+            {
+                jobApplications = jobApplications.Where(j =>
+                    searchWords.Any(word =>
+                        j.JobTitle.ToLower().Contains(word)
+                        || j.CompanyName.ToLower().Contains(word)
+                        || j.HiringTeam.ToLower().Contains(word)
+                        || j.JobDescription.ToLower().Contains(word)
+                    ));
+            }
         }
 
         var jobApplicationDtos = await jobApplications.Select(j => new JobApplicationDTO
@@ -57,7 +64,10 @@ public class JobApplicationsController : ControllerBase
             AppliedDate = j.AppliedDate,
             CreatedDate = j.CreatedDate,
             UpdatedDate = j.UpdatedDate
-        }).ToListAsync();
+        })
+        .Skip(queryParameters.Size * (queryParameters.Page - 1))
+        .Take(queryParameters.Size)
+        .ToListAsync();
 
         return Ok(jobApplicationDtos);
     }
