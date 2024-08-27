@@ -17,8 +17,7 @@ public class JobApplicationsController : ControllerBase
     }
 
     [HttpGet]
-    // public async Task<ActionResult<IEnumerable<JobApplicationDTO>>> GetJobApplications(string? searchString, int? jobApplicationStatusId)
-    public async Task<ActionResult<IEnumerable<JobApplicationDTO>>> GetJobApplications([FromQuery] JobApplicationQueryParameters queryParameters)
+    public async Task<ActionResult<IEnumerable<JobApplicationsDTO>>> GetJobApplications([FromQuery] JobApplicationQueryParameters queryParameters)
     {
         var jobApplications = _context.JobApplications.AsQueryable();
 
@@ -48,32 +47,33 @@ public class JobApplicationsController : ControllerBase
             }
         }
 
-        var jobApplicationDtos = await jobApplications.Select(j => new JobApplicationDTO
+        var jobApplicationsDtos = await jobApplications.Select(j => new JobApplicationsDTO
         {
             Id = j.Id,
-            UserId = j.UserId,
             JobTitle = j.JobTitle,
             CompanyName = j.CompanyName,
             HiringTeam = j.HiringTeam,
-            JobPostingUrl = j.JobPostingUrl,
-            JobDescription = j.JobDescription,
             MinSalary = j.MinSalary,
             MaxSalary = j.MaxSalary,
             JobApplicationStatusId = j.JobApplicationStatusId,
-            Notes = j.Notes,
             AppliedDate = j.AppliedDate,
-            CreatedDate = j.CreatedDate,
             UpdatedDate = j.UpdatedDate
         })
         .Skip(queryParameters.Size * (queryParameters.Page - 1))
         .Take(queryParameters.Size)
         .ToListAsync();
 
-        return Ok(jobApplicationDtos);
+        return Ok(new
+        {
+            count = jobApplicationsDtos.Count,
+            data = jobApplicationsDtos,
+            page = queryParameters.Page,
+            size = queryParameters.Size
+        });
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<JobApplicationDTO>> GetJobApplication(int id)
+    [HttpGet("{id}", Name = nameof(GetJobApplication))]
+    public async Task<ActionResult> GetJobApplication(int id)
     {
         var jobApplication = await _context.JobApplications.FindAsync(id);
         if (jobApplication == null) return NotFound();
@@ -96,7 +96,12 @@ public class JobApplicationsController : ControllerBase
             UpdatedDate = jobApplication.UpdatedDate
         };
 
-        return Ok(jobApplicationDto);
+        var resource = new Resource<JobApplicationDTO>(jobApplicationDto);
+        resource.AddLink("self", Url.Link(nameof(GetJobApplication), new { id }), "GET");
+        resource.AddLink("update", Url.Link(nameof(GetJobApplication), new { id }), "PUT");
+        resource.AddLink("delete", Url.Link(nameof(GetJobApplication), new { id }), "DELETE");
+
+        return Ok(resource);
     }
 
     [HttpPost]
